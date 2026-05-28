@@ -15,11 +15,17 @@ const usePostIndexStore = defineStore("postIndex", () => {
   const getNextPageNumber = computed(() => currentPage.value + 1);
 
   // 3, Actions (function) - 여러가지 값 처리 할 것들
+  const clearPostIndex = () => {
+    items.value = [];
+    isLastPage.value = false;
+    currentPage.value = 0;
+  };
+
   const getPostPagination = async (page = 1) => {
     if (!isLastPage.value) {
       // 마지막 페이지가 아닌 경우에만 실행
       try {
-        const url = "/api/postsd";
+        const url = "/api/posts";
         const params = {
           page,
         };
@@ -48,6 +54,7 @@ const usePostIndexStore = defineStore("postIndex", () => {
     getNextPageNumber,
 
     // actions
+    clearPostIndex,
     getPostPagination,
   };
 });
