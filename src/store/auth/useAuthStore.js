@@ -45,6 +45,22 @@ export const useAuthStore = defineStore("authStore", () => {
     }
   };
 
+  //reissu
+  const reissue = async () => {
+    try {
+      const url = "/api/reissue-token";
+
+      const res = await myAxios.post(url);
+      const data = res.data.data;
+      accessToken.value = data.accessToken;
+      userInfo.value = data.user;
+      isLoggedIn.value = true; // 로그인 성공 했으니 true
+    } catch (error) {
+      clearAuthStore();
+      throw error;
+    }
+  };
+
   return {
     // 1, State
     isLoggedIn,
@@ -55,5 +71,6 @@ export const useAuthStore = defineStore("authStore", () => {
 
     // 3, Actions
     login,
+    reissue,
   };
 });
