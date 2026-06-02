@@ -2,6 +2,7 @@
 import { onBeforeMount, onBeforeUnmount, ref } from "vue";
 import MyButton from "../../components/button/MyButton.vue";
 import usePostIndexStore from "../../store/post/usePostIndexStore.js";
+import { useRouter } from "vue-router";
 
 // 함수 정의------------------start---------------------------
 // store로 이관
@@ -32,12 +33,17 @@ import usePostIndexStore from "../../store/post/usePostIndexStore.js";
 // };
 // ----------------------------end----------------------------------
 
+const router = useRouter();
 // store 쓸 준비 완료
 const postIndexStore = usePostIndexStore();
 
 // 버튼 클릭시 다음 페이지
 const getNextPage = async () => {
   await postIndexStore.getPostPagination(postIndexStore.getNextPageNumber);
+};
+
+const redirectShow = (id) => {
+  router.push(`/posts/${id}`);
 };
 
 // 라이프 사이클
@@ -52,6 +58,7 @@ onBeforeUnmount(postIndexStore.clearPostIndex);
       :key="item.id"
       class="card"
       :style="{ backgroundImage: `url(${item.image})` }"
+      @click="redirectShow(item.id)"
     ></div>
   </div>
   <MyButton
