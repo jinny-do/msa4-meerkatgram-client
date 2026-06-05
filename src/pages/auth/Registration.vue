@@ -5,6 +5,7 @@ import MyInput from "../../components/input/MyInput.vue";
 import { useFileStore } from "../../store/file/useFileStore.js";
 import { useAuthStore } from "../../store/auth/useAuthStore.js";
 import { useRouter } from "vue-router";
+import registrationValidation from "../../util/validator/domain/auth/registrationValidation.js";
 
 const router = useRouter();
 const fileStore = useFileStore();
@@ -22,6 +23,27 @@ const registrationData = reactive({
 
 // 회원가입 처리
 const handleSubmit = async () => {
+  // 유효성 검사 - 백앤드로 보내기 전에 해야함
+  const validationList = [
+    registrationValidation.email(registrationData.email),
+    registrationValidation.password(registrationData.password),
+    registrationValidation.passwordChk(
+      registrationData.password,
+      registrationData.passwordChk,
+    ),
+    registrationValidation.nick(registrationData.nick),
+    registrationValidation.profile(registrationData.profile),
+  ];
+
+  // 비어있지 않은 문자열들만 가져와야함 filter(특정 조건에 맞는 것만 가져옴)
+  const errorList = validationList.filter((val) => val);
+
+  if (errorList.length > 0) {
+    // error가 남
+    alert(errorList.join("\n")); // join: 배열(Array)의 요소들을 하나의 문자열로 이어붙이는 메서드
+    return; // 에러 발생시 밑 처리 하면 안 되니 바로 리턴
+  }
+
   try {
     await authStore.registration(registrationData);
     alert("회원가입에 성공했습니다.");
