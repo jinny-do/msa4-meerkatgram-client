@@ -3,21 +3,20 @@ import { onBeforeMount, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { userPostShowStore } from "../../store/post/usePostShowStore";
 import { useAuthStore } from "../../store/auth/useAuthStore";
+import { useMyErrorStore } from "../../store/error/useMyErrorStroe";
 
 const route = useRoute();
 const router = useRouter();
 const postShowStore = userPostShowStore();
 const authStore = useAuthStore();
+const myErrorStore = useMyErrorStore();
 
 onBeforeMount(async () => {
   try {
     await postShowStore.getPost(route.params.id);
   } catch (error) {
-    const msg = error?.response?.data.data
-      ? error?.response?.data.data
-      : "게시글 획득 실패";
-    alert(msg);
-    router.replace("/");
+    myErrorStore.setErrorInfo(error);
+    router.replace("/error");
   }
 });
 

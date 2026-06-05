@@ -31,17 +31,10 @@ export const useAuthStore = defineStore("authStore", () => {
       userInfo.value = data.user;
       isLoggedIn.value = true; // 로그인 성공 했으니 true
     } catch (error) {
-      // axios(서버)에서 에러 나면 이 데이터가 생성이 됨
-      if (error.response) {
-        if (error.response.data.code === "E01") {
-          alert(error.response.data.data);
+      console.error(error);
 
-          return;
-        }
-      }
-
-      // 자바스크립트 에러인 경우 프론트에서 에러 처리
-      useMyErrorStore().setErrorInfo(error);
+      // 발생한 에러를 반환한다.
+      throw error;
     }
   };
 

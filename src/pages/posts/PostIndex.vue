@@ -3,6 +3,7 @@ import { onBeforeMount, onBeforeUnmount, ref } from "vue";
 import MyButton from "../../components/button/MyButton.vue";
 import usePostIndexStore from "../../store/post/usePostIndexStore.js";
 import { useRouter } from "vue-router";
+import { useMyErrorStore } from "../../store/error/useMyErrorStroe.js";
 
 // 함수 정의------------------start---------------------------
 // store로 이관
@@ -36,10 +37,21 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 // store 쓸 준비 완료
 const postIndexStore = usePostIndexStore();
+const myErrorStore = useMyErrorStore();
+
+const getPagination = async (page = 1) => {
+  try {
+    await postIndexStore.getPostPagination(page);
+  } catch (error) {
+    // error 세팅
+    myErrorStore.setErrorInfo(error);
+    router.replace("/error");
+  }
+};
 
 // 버튼 클릭시 다음 페이지
 const getNextPage = async () => {
-  await postIndexStore.getPostPagination(postIndexStore.getNextPageNumber);
+  await getPagination(postIndexStore.getNextPageNumber);
 };
 
 const redirectShow = (id) => {
@@ -47,7 +59,7 @@ const redirectShow = (id) => {
 };
 
 // 라이프 사이클
-onBeforeMount(postIndexStore.getPostPagination);
+onBeforeMount(getPagination);
 onBeforeUnmount(postIndexStore.clearPostIndex);
 </script>
 
