@@ -41,6 +41,10 @@ const handleSubmit = async () => {
     alert(`${resultValidationEmail} \n ${resultValidationPassword}`);
   }
 };
+
+const redirectRegistraion = () => {
+  router.push("/registration");
+};
 </script>
 
 <template>
@@ -73,6 +77,7 @@ const handleSubmit = async () => {
       :color="'white'"
       :size="'middle'"
       :content="'Sign Up'"
+      @click="redirectRegistraion"
     />
   </form>
 </template>
