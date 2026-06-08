@@ -30,6 +30,27 @@ export const useFileStore = defineStore("fileStore", () => {
     }
   };
 
+  const uploadPosts = async (file) => {
+    try {
+      const url = "/api/files/posts";
+
+      const data = new FormData();
+      data.append("file", file);
+
+      // Content-type 변경
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      const res = await myAxios.post(url, data, config);
+      return res.data.data.fileUri;
+    } catch (error) {
+      return null;
+    }
+  };
+
   return {
     // State
 
@@ -37,5 +58,6 @@ export const useFileStore = defineStore("fileStore", () => {
 
     // Actions
     uploadProfile,
+    uploadPosts,
   };
 });
