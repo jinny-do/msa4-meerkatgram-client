@@ -4,6 +4,7 @@ import MyButton from "../../components/button/MyButton.vue";
 import { useFileStore } from "../../store/file/useFileStore";
 import usePostCreateStore from "../../store/post/usePostCreateStore.js";
 import { useRouter } from "vue-router";
+import postCreateValidation from "../../util/validator/domain/post/postCreateValidation.js";
 
 const fileStore = useFileStore();
 const postCreateStore = usePostCreateStore();
@@ -40,11 +41,25 @@ const handleChangePost = async (e) => {
 };
 
 const handleSubmit = async () => {
+  const validationList = [
+    postCreateValidation.content(postData.content),
+    postCreateValidation.image(postData.image),
+  ];
+
+  // 비어있지 않은 문자열들만 가져와야함 filter(특정 조건에 맞는 것만 가져옴)
+  const errorList = validationList.filter((val) => val);
+
+  if (errorList.length > 0) {
+    // error가 남
+    alert(errorList.join("\n")); // join: 배열(Array)의 요소들을 하나의 문자열로 이어붙이는 메서드
+    return; // 에러 발생시 밑 처리 하면 안 되니 바로 리턴
+  }
+
   try {
     const result = await postCreateStore.postCreate(postData);
 
     alert("게시물 작성이 완료되었습니다.");
-    router.push(`/posts/${result.data.id}`);
+    router.push(`/posts/${result.id}`);
   } catch (error) {
     const data = error?.response?.data?.data;
 
@@ -53,8 +68,8 @@ const handleSubmit = async () => {
     } else if (data?.code === "E21") {
       alert("잘못된 양식입니다.");
     } else {
-      alert("오류가 발생했습니다.");
-      router.replace("/");
+      myErrorStore.setErrorInfo(error);
+      router.replace("/error");
     }
   }
 };

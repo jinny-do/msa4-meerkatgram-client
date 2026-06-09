@@ -12,7 +12,7 @@ const usePostCreateStore = defineStore("postCreate", () => {
       const url = "/api/posts/create";
 
       const res = await myAxios.post(url, postData);
-      return res.data;
+      return res.data.data;
     } catch (error) {
       console.error(error);
       throw error;
