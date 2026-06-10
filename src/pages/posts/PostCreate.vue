@@ -5,9 +5,11 @@ import { useFileStore } from "../../store/file/useFileStore";
 import usePostCreateStore from "../../store/post/usePostCreateStore.js";
 import { useRouter } from "vue-router";
 import postCreateValidation from "../../util/validator/domain/post/postCreateValidation.js";
+import { useAuthStore } from "../../store/auth/useAuthStore.js";
 
 const fileStore = useFileStore();
 const postCreateStore = usePostCreateStore();
+const authStore = useAuthStore();
 
 const preview = ref(null);
 const selectedFile = ref(null);
@@ -59,7 +61,8 @@ const handleSubmit = async () => {
     const result = await postCreateStore.postCreate(postData);
 
     alert("게시물 작성이 완료되었습니다.");
-    router.push(`/posts/${result.id}`);
+    authStore.userInfo.countPosts++;
+    router.replace(`/posts/${result.id}`);
   } catch (error) {
     const data = error?.response?.data?.data;
 
