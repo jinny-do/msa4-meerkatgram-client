@@ -20,6 +20,18 @@ onBeforeMount(async () => {
   }
 });
 
+const deleteHandle = async () => {
+  try {
+    await postShowStore.deletePost(route.params.id);
+    alert("게시글 삭제가 완료되었습니다.");
+    authStore.userInfo.countPosts--;
+    router.replace("/posts");
+  } catch (error) {
+    myErrorStore.setErrorInfo(error);
+    router.replace("/error");
+  }
+};
+
 onBeforeUnmount(postShowStore.clearPostShow);
 </script>
 
@@ -33,6 +45,7 @@ onBeforeUnmount(postShowStore.clearPostShow);
       <div
         class="delete-icon"
         v-if="postShowStore.post.userId === authStore.userInfo.id"
+        @click="deleteHandle"
       ></div>
       <div class="delete-box" v-else></div>
       <div class="like-box">
